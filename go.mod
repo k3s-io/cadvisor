@@ -2,8 +2,6 @@ module github.com/google/cadvisor
 
 go 1.22
 
-toolchain go1.22.10
-
 require (
 	cloud.google.com/go/compute/metadata v0.5.0
 	github.com/Microsoft/go-winio v0.6.2
