@@ -20,6 +20,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
 	"path"
 	"regexp"
 	"strings"
@@ -61,6 +62,10 @@ func (f *containerdFactory) String() string {
 }
 
 func (f *containerdFactory) NewContainerHandler(name string, metadataEnvAllowList []string, inHostNamespace bool) (handler container.ContainerHandler, err error) {
+	if addr := os.Getenv("CADVISOR_CONTAINERD_ENDPOINT"); addr != "" {
+		ArgContainerdEndpoint = &addr
+	}
+
 	client, err := Client(*ArgContainerdEndpoint, *ArgContainerdNamespace)
 	if err != nil {
 		return
@@ -130,6 +135,10 @@ func (f *containerdFactory) DebugInfo() map[string][]string {
 
 // Register root container before running this function!
 func Register(factory info.MachineInfoFactory, fsInfo fs.FsInfo, includedMetrics container.MetricSet) error {
+	if addr := os.Getenv("CADVISOR_CONTAINERD_ENDPOINT"); addr != "" {
+		ArgContainerdEndpoint = &addr
+	}
+
 	client, err := Client(*ArgContainerdEndpoint, *ArgContainerdNamespace)
 	if err != nil {
 		return fmt.Errorf("unable to create containerd client: %v", err)
